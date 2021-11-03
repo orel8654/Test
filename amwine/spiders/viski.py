@@ -40,12 +40,8 @@ class ViskiSpider(scrapy.Spider):
             body=body,
             callback=self.max_pages,
         )
-        # self.max_pages(request)
 
     def parse(self, response, **kwargs):
-
-        # time = datetime.now().strftime('%Y-%m-%d %H:%m')
-        # time = datetime.now().timestamp()
 
         category_items = ['Главная страница', 'Каталог', 'Крепкие напитки', 'Виски']
 
@@ -97,30 +93,3 @@ class ViskiSpider(scrapy.Spider):
                 },
                 'variants': 1,
             }
-
-        # yield {
-        #     'RPC': response.json()['products'][0]['props']['article']
-        # }
-
-
-
-
-    # def parse(self, response):
-    #     for p in response.css('ul.products li'):
-    #         # il = ItemLoader(item=AmwineItem(), selector=p)
-    #
-    #         # il.add_css('scu', 'a.button::attr(data-product_sku)')
-    #         # il.add_css('name', 'h2')
-    #         # il.add_css('price', 'span.price bdi')
-    #
-    #         yield  il.load_item()
-    #
-    #         yield {
-    #             'name': p.css('h2::text').get(),
-    #             'scu': p.css('a.button::attr(data-product_scu)').get(),
-    #             'price': p.css('span.price bdi::text').get(),
-    #         }
-    #     next_page = response.css('ul.page-numbers a.next::attr(href)').get()
-    #     if next_page is not None:
-    #         next_page = response.urljoin(next_page)
-    #         yield scrapy.Request(next_page, callback=self.parse)
