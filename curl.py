@@ -10,7 +10,7 @@ headers = {
     "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/15.1 Safari/605.1.15",
     "Connection": "keep-alive",
     "Referer": "https://amwine.ru/catalog/krepkie_napitki/viski/",
-    "Content-Length": "1148",
+    # "Content-Length": "1148",
     "X-Requested-With": "XMLHttpRequest"
 }
 
