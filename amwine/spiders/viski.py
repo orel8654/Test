@@ -1,28 +1,24 @@
-import json
-
 import scrapy
-from ..items import AmwineItem
-from scrapy.loader import ItemLoader
-
+from scrapy.http.request import Request
+from scrapy.http import FormRequest, headers
+from curl import *
 
 class ViskiSpider(scrapy.Spider):
     name = 'viski'
     allowed_domains = ['amwine.ru']
-    start_urls = ['https://amwine.ru/catalog/krepkie_napitki/viski/?page=1']
+    # start_urls = ['https://amwine.ru/catalog/krepkie_napitki/viski/?page=1']
+    start_urls = ['https://amwine.ru/local/components/adinadin/catalog.section.json/ajax_call.php']
     pages_count = 0
 
-    cookie = ''
-    # name = 'test'
-    # allowed_domains = ['magnatiles.com']
-    # start_urls = ['https://magnatiles.com/products/page/1/']
-    # pages_count = 0
-
-
-    def parse(self, response):
-        pp = response.css('title::text').get().strip()
-        yield {
-            'pp': pp,
-        }
+    def start_requests(self):
+        yield Request(
+            url=self.start_urls[0],
+            method='POST',
+            dont_filter=True,
+            cookies=cookies,
+            headers=headers,
+            body=body,
+        )
 
 
 
