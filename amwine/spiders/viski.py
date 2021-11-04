@@ -46,50 +46,97 @@ class ViskiSpider(scrapy.Spider):
         category_items = ['Главная страница', 'Каталог', 'Крепкие напитки', 'Виски']
 
         for item in range(len(response.json()['products'])):
+
+            products = response.json()['products'][item]
+
             try:
-                title = response.json()['products'][item]['name']
-                value = response.json()['products'][item]['props']['value']
+                title = products['name']
+                value = str(products['props']['value'])
                 name = {
                     'name': title,
                     'value': value,
                 }
             except Exception:
-                title = response.json()['products'][item]['name']
+                title = products['name']
                 name = {
                     'name': title,
                 }
 
-            sale = response.json()['products'][item]['sale']
-            if sale != False:
-                price_data = {
-                    'current': float(response.json()['products'][item]['props']['middle_price_77']),
-                    'original': float(response.json()['products'][item]['props']['old_price_77']),
-                    'sale': f'Скидка {sale}',
-                }
+            try:
+                brand = str(products['props']['brand'])
+            except Exception:
+                brand = str(None)
+
+            sale = products['sale']
+            if sale == False:
+                try:
+                    price_data = {
+                        'current': float(products['price']),
+                        'original': float(products['price']),
+                        'sale': 'Скидка 0%',
+                    }
+                except Exception:
+                    try:
+                        price_data = {
+                            'current': float(products['props']['middle_price_77']),
+                            'original': float(products['props']['middle_price_77']),
+                            'sale': 'Скидка 0%',
+                        }
+                    except Exception:
+                        try:
+                            price_data = {
+                                'current': float(products['old_price_77']),
+                                'original': float(products['old_price_77']),
+                                'sale': 'Скидка 0%',
+                            }
+                        except Exception:
+                            price_data = {
+                                'current': None,
+                                'original': None,
+                                'sale': 'Скидка 0%',
+                            }
             else:
-                price_data = {
-                    'current': float(response.json()['products'][item]['props']['old_price_77']),
-                    'original': float(response.json()['products'][item]['props']['old_price_77']),
-                    'sale': 'Скидка 0%',
-                }
+                try:
+                    price_data = {
+                        'current': products['price'],
+                        'original': products['old_price'],
+                        'sale': f'Скидка {sale}',
+                    }
+                except Exception:
+                    price_data = {
+                        'current': products['props']['middle_price_77'],
+                        'original': products['props']['old_price_77'],
+                        'sale': f'Скидка {sale}',
+                    }
+
+            try:
+                artic = str(products['props']['article'])
+            except Exception:
+                artic = str(None)
+
+            try:
+                country = products['props']['country']
+            except Exception:
+                country = str(None)
 
             yield {
                 'time': datetime.now().timestamp(),
-                'RPC': str(response.json()['products'][item]['id']),
-                'url': 'https://amwine.ru' + response.json()['products'][item]['link'],
+                'RPC': str(products['id']),
+                'url': 'https://amwine.ru' + products['link'],
                 'title': name,
-                'brand': str(response.json()['products'][item]['props']['brand']),
+                'brand': brand,
                 'section': category_items,
                 'price_data': price_data,
                 'stock': {
-                    'in_stock': response.json()['products'][item]['available'],
+                    'in_stock': products['available'],
                 },
                 'assets': {
-                    'main_image': 'https://amwine.ru' + response.json()['products'][item]['preview_picture'],
+                    'main_image': 'https://amwine.ru' + products['preview_picture'],
                 },
                 'metadata': {
-                    'АРТИКУЛ': response.json()['products'][item]['props']['article'],
-                    'СТРАНА ПРОИЗВОДИТЕЛЬ': response.json()['products'][item]['props']['country']
+                    'АРТИКУЛ': artic,
+                    'ОБЪЕМ': value,
+                    'СТРАНА ПРОИЗВОДИТЕЛЬ': country,
                 },
                 'variants': 1,
             }
