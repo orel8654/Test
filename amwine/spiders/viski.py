@@ -98,14 +98,14 @@ class ViskiSpider(scrapy.Spider):
             else:
                 try:
                     price_data = {
-                        'current': products['price'],
-                        'original': products['old_price'],
+                        'current': float(products['price']),
+                        'original': float(products['old_price']),
                         'sale': f'Скидка {sale}',
                     }
                 except Exception:
                     price_data = {
-                        'current': products['props']['middle_price_77'],
-                        'original': products['props']['old_price_77'],
+                        'current': float(products['props']['middle_price_77']),
+                        'original': float(products['props']['old_price_77']),
                         'sale': f'Скидка {sale}',
                     }
 
